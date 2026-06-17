@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 	"fmt"
-	"github.com/jackc/pgx/v5"
+	"github.com/aaaaarsen/ai-dos/internal/db"
 	"context"
 	"github.com/gin-gonic/gin"
 )
@@ -26,12 +26,12 @@ func main(){
 	
 	dsn := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s", dbUser, dbPassword, dbHost, dbPort, dbName, dbSslmode) 
 
-	conn, err := pgx.Connect(context.Background(), dsn)
+	pool, err := db.NewPool(dsn)
 	if err != nil {
 		log.Fatalf("Connect failed: %v", err)
 	}
-	defer conn.Close(context.Background())
-	err = conn.Ping(context.Background())
+	defer pool.Close()
+	err = pool.Ping(context.Background())
 	
 	if err != nil {
 		log.Fatalf("Connect failed: %v", err)
