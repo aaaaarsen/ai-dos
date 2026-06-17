@@ -18,3 +18,29 @@ func CreateChat (pool *pgxpool.Pool, userID int64, title *string) (*models.Chat,
 	}
 	return chat, nil
 }
+
+func GetChatsByUserID (pool *pgxpool.Pool, userID int64) ([]models.Chat, error) {
+	query := `SELECT id, user_id, title, created_at FROM chats WHERE user_id = $1 ORDER BY created_at DESC`
+
+	var chats []models.Chat
+
+	rows, err := pool.Query(context.Background(), query, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next(){
+		var chat models.Chat
+		err = rows.Scan(&chat.ID, &chat.UserID, &chat.Title, &chat.CreatedAt)
+		if err != nil {
+			return nil, err
+		}
+		chats = append(chats, chat)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return chats, nil
+}

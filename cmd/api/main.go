@@ -43,6 +43,7 @@ func main(){
 
 	router := gin.Default()
 	router.POST("/chats", handlers.CreateChatHandler(pool))
+	router.GET("/chats", handlers.GetChatsHandler(pool))
 
 	router.GET("/health", func(c *gin.Context) {c.JSON(200, gin.H{"status": "ok"})})
 	router.Run(":"+serverPort)
