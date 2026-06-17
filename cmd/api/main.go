@@ -6,8 +6,10 @@ import (
 	"os"
 	"fmt"
 	"github.com/aaaaarsen/ai-dos/internal/db"
+	"github.com/aaaaarsen/ai-dos/internal/handlers"
 	"context"
 	"github.com/gin-gonic/gin"
+
 )
 
 func main(){
@@ -40,6 +42,7 @@ func main(){
 
 
 	router := gin.Default()
+	router.POST("/chats", handlers.CreateChatHandler(pool))
 
 	router.GET("/health", func(c *gin.Context) {c.JSON(200, gin.H{"status": "ok"})})
 	router.Run(":"+serverPort)
