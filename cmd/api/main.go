@@ -6,7 +6,6 @@ import (
 	"log"
 	"os"
 
-	"github.com/aaaaarsen/ai-dos/internal/ai"
 	"github.com/aaaaarsen/ai-dos/internal/db"
 	"github.com/aaaaarsen/ai-dos/internal/handlers"
 	"github.com/aaaaarsen/ai-dos/internal/middleware"
@@ -56,8 +55,8 @@ func main(){
 	protected.Use(middleware.AuthMiddleware(jwtSecret))
 	protected.POST("/chats", handlers.CreateChatHandler(pool))
 	protected.GET("/chats", handlers.GetChatsHandler(pool))
-	protected.POST("/chats/:id/messages", handlers.CreateMessageHandler(pool))
 	protected.GET("/chats/:id/messages", handlers.GetMessagesHandler(pool))
+	protected.POST("/chats/:id/messages", handlers.CreateMessageHandler(pool, groqKey, groqModel))
 	router.POST("/auth/register", handlers.RegisterHandler(pool, jwtSecret))
 	router.POST("/auth/login", handlers.LoginHandler(pool, jwtSecret))
 
