@@ -1,16 +1,17 @@
 package main
 
 import (
-	"github.com/joho/godotenv"
+	"context"
+	"fmt"
 	"log"
 	"os"
-	"fmt"
+
+	"github.com/aaaaarsen/ai-dos/internal/ai"
 	"github.com/aaaaarsen/ai-dos/internal/db"
 	"github.com/aaaaarsen/ai-dos/internal/handlers"
 	"github.com/aaaaarsen/ai-dos/internal/middleware"
-	"context"
 	"github.com/gin-gonic/gin"
-
+	"github.com/joho/godotenv"
 )
 
 func main(){
@@ -28,6 +29,12 @@ func main(){
 	serverPort := os.Getenv("SERVER_PORT")
 
 	jwtSecret := os.Getenv("JWT_SECRET")
+
+	groqKey := os.Getenv("GROQ_API_KEY")
+	groqModel := os.Getenv("GROQ_MODEL")
+
+	
+
 	
 	dsn := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s", dbUser, dbPassword, dbHost, dbPort, dbName, dbSslmode) 
 
