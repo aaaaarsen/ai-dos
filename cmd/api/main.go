@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/aaaaarsen/ai-dos/internal/db"
 	"github.com/aaaaarsen/ai-dos/internal/handlers"
+	"github.com/aaaaarsen/ai-dos/internal/middleware"
 	"context"
 	"github.com/gin-gonic/gin"
 
@@ -44,10 +45,12 @@ func main(){
 
 
 	router := gin.Default()
-	router.POST("/chats", handlers.CreateChatHandler(pool))
-	router.GET("/chats", handlers.GetChatsHandler(pool))
-	router.POST("/chats/:id/messages", handlers.CreateMessageHandler(pool))
-	router.GET("/chats/:id/messages", handlers.GetMessagesHandler(pool))
+	protected := router.Group("/")
+	protected.Use(middleware.AuthMiddleware(jwtSecret))
+	protected.POST("/chats", handlers.CreateChatHandler(pool))
+	protected.GET("/chats", handlers.GetChatsHandler(pool))
+	protected.POST("/chats/:id/messages", handlers.CreateMessageHandler(pool))
+	protected.GET("/chats/:id/messages", handlers.GetMessagesHandler(pool))
 	router.POST("/auth/register", handlers.RegisterHandler(pool, jwtSecret))
 	router.POST("/auth/login", handlers.LoginHandler(pool, jwtSecret))
 
