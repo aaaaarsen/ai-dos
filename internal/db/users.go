@@ -2,10 +2,11 @@ package db
 
 import (
 	"context"
+	"errors"
 
 	"github.com/aaaaarsen/ai-dos/internal/models"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
-	
 )
 
 
@@ -17,6 +18,11 @@ func CreateUser (pool *pgxpool.Pool, email string, passwordHash string) (*models
 
 	err := pool.QueryRow(context.Background(), query, email, passwordHash).Scan(&user.ID, &user.CreatedAt)
 	if err != nil {
+		var pgErr *pgconn.PgError
+		if errors.As(err, &pgErr) && pgErr.Code == "23505"{
+			return nil, errors.New("email already exists")
+		}
+
 		return nil, err
 	}
 	return user, nil
@@ -33,3 +39,4 @@ func GetUserByEmail (pool *pgxpool.Pool, email string) (*models.User, error){
 	}
 	return user, nil
 }
+

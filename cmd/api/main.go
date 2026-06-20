@@ -25,6 +25,8 @@ func main(){
 	dbName := os.Getenv("DB_NAME")
 	dbSslmode := os.Getenv("DB_SSLMODE")
 	serverPort := os.Getenv("SERVER_PORT")
+
+	jwtSecret := os.Getenv("JWT_SECRET")
 	
 	dsn := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s", dbUser, dbPassword, dbHost, dbPort, dbName, dbSslmode) 
 
@@ -46,6 +48,8 @@ func main(){
 	router.GET("/chats", handlers.GetChatsHandler(pool))
 	router.POST("/chats/:id/messages", handlers.CreateMessageHandler(pool))
 	router.GET("/chats/:id/messages", handlers.GetMessagesHandler(pool))
+	router.POST("/auth/register", handlers.RegisterHandler(pool, jwtSecret))
+	router.POST("/auth/login", handlers.LoginHandler(pool, jwtSecret))
 
 	router.GET("/health", func(c *gin.Context) {c.JSON(200, gin.H{"status": "ok"})})
 	router.Run(":"+serverPort)
