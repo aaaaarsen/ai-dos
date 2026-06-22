@@ -14,10 +14,7 @@ import (
 )
 
 func main(){
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
+	_ = godotenv.Load()
 
 	dbHost := os.Getenv("DB_HOST")
 	dbPort := os.Getenv("DB_PORT")
@@ -37,7 +34,7 @@ func main(){
 	
 	dsn := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s", dbUser, dbPassword, dbHost, dbPort, dbName, dbSslmode) 
 
-	err = db.RunMigrations(dsn)
+	err := db.RunMigrations(dsn)
 	if err != nil {
 		log.Fatalf("Migration failed: %v", err)
 	}
