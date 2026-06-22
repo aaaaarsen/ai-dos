@@ -37,6 +37,12 @@ func main(){
 	
 	dsn := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s", dbUser, dbPassword, dbHost, dbPort, dbName, dbSslmode) 
 
+	err = db.RunMigrations(dsn)
+	if err != nil {
+		log.Fatalf("Migration failed: %v", err)
+	}
+	log.Println("Migrations applied succesfully")
+
 	pool, err := db.NewPool(dsn)
 	if err != nil {
 		log.Fatalf("Connect failed: %v", err)
