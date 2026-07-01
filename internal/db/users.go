@@ -40,3 +40,15 @@ func GetUserByEmail (pool *pgxpool.Pool, email string) (*models.User, error){
 	return user, nil
 }
 
+func GetUserByID (pool *pgxpool.Pool, id int64) (*models.User, error) {
+	query := `SELECT id, email, created_at FROM users where id = $1`
+
+	user := &models.User{}
+
+	err := pool.QueryRow(context.Background(), query, id).Scan(&user.ID, &user.Email, &user.CreatedAt)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+

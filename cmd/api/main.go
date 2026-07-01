@@ -60,6 +60,7 @@ func main(){
 	protected.GET("/chats", handlers.GetChatsHandler(pool))
 	protected.GET("/chats/:id/messages", handlers.GetMessagesHandler(pool))
 	protected.POST("/chats/:id/messages", handlers.CreateMessageHandler(pool, groqKey, groqModel))
+	protected.GET("/users/me", handlers.GetMeHandler(pool))
 	router.POST("/auth/register", handlers.RegisterHandler(pool, jwtSecret))
 	router.POST("/auth/login", handlers.LoginHandler(pool, jwtSecret))
 

@@ -78,3 +78,21 @@ func LoginHandler(pool *pgxpool.Pool, jwtSecret string) gin.HandlerFunc {
 
 	}
 }
+
+func GetMeHandler(pool *pgxpool.Pool) gin.HandlerFunc{
+	return func (c *gin.Context){
+		value, exists := c.Get("userID")
+		if !exists {
+			c.JSON(401, gin.H{"error": "unauthorized"})
+			return 
+		}
+		userID := value.(int64)
+
+		me, err := db.GetUserByID(pool, userID)
+		if err != nil {
+			c.JSON(500, gin.H{"error": err.Error()})
+			return 
+		}
+		c.JSON(200, me)
+	}
+}
