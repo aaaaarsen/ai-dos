@@ -44,3 +44,34 @@ func GetRecentSummaries(pool *pgxpool.Pool, chatID int64, limit int) ([]models.S
 	}
 	return summaries, nil
 }
+
+func GetAllSummariesByUserID(pool *pgxpool.Pool, userID int64) ([]models.Summary, error){
+	query:=`SELECT s.id, s.chat_id, s.content, s.created_at 
+			FROM summaries s 
+			JOIN chats c ON s.chat_id = c.id 
+			WHERE c.user_id = $1 
+			ORDER BY s.created_at DESC 
+			LIMIT 20`
+
+	var summaries []models.Summary
+
+	rows, err := pool.Query(context.Background(), query, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next(){
+		var summary models.Summary
+		err = rows.Scan(&summary.ID, &summary.ChatID, &summary.Content, &summary.CreatedAt)
+		if err != nil {
+			return nil, err
+		}
+		summaries = append(summaries, summary)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return summaries, nil
+}

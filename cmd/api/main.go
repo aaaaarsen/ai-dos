@@ -66,6 +66,7 @@ func main(){
 	protected.GET("/chats/:id/messages", handlers.GetMessagesHandler(pool))
 	protected.GET("/users/me", handlers.GetMeHandler(pool))
 	protected.GET("/chats/:id/summaries", handlers.GetSummariesHandler(pool))
+	protected.GET("/users/me/insights", handlers.GetInsightsHandler(pool, groqKey, groqModel))
 
 	protected.DELETE("/chats/:id", handlers.DeleteChatHandler(pool))
 	protected.DELETE("/users/me", handlers.DeleteMeHandler(pool))
