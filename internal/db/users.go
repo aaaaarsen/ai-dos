@@ -52,3 +52,16 @@ func GetUserByID (pool *pgxpool.Pool, id int64) (*models.User, error) {
 	return user, nil
 }
 
+func DeleteUser(pool *pgxpool.Pool, userID int64) error {
+	query := `DELETE FROM users WHERE id = $1`
+
+	tag, err := pool.Exec(context.Background(), query, userID)
+	if err != nil {
+		return err
+	}
+
+	if tag.RowsAffected() == 0 {
+		return errors.New("user not found")
+	}
+	return nil
+}

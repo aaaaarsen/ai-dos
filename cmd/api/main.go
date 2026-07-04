@@ -62,6 +62,7 @@ func main(){
 	protected.POST("/chats/:id/messages", handlers.CreateMessageHandler(pool, groqKey, groqModel))
 	protected.GET("/users/me", handlers.GetMeHandler(pool))
 	protected.DELETE("/chats/:id", handlers.DeleteChatHandler(pool))
+	protected.DELETE("/users/me", handlers.DeleteMeHandler(pool))
 	router.POST("/auth/register", handlers.RegisterHandler(pool, jwtSecret))
 	router.POST("/auth/login", handlers.LoginHandler(pool, jwtSecret))
 

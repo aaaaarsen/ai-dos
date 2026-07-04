@@ -1,6 +1,7 @@
 package handlers
 
 import (
+
 	"github.com/aaaaarsen/ai-dos/internal/auth"
 	"github.com/aaaaarsen/ai-dos/internal/db"
 	"github.com/gin-gonic/gin"
@@ -94,5 +95,27 @@ func GetMeHandler(pool *pgxpool.Pool) gin.HandlerFunc{
 			return 
 		}
 		c.JSON(200, me)
+	}
+}
+
+func DeleteMeHandler(pool *pgxpool.Pool) gin.HandlerFunc{
+	return func(c *gin.Context) {
+		value, exists := c.Get("userID")
+		if !exists {
+			c.JSON(401, gin.H{"error":"unauthorized"})
+			return 
+		}
+		userID := value.(int64)
+
+		err := db.DeleteUser(pool, userID)
+		if err != nil {
+			if err.Error() == "user not found" {
+				c.JSON(404, gin.H{"error": err.Error()})
+				return 
+			}
+			c.JSON(500, gin.H{"error": err.Error()})
+			return 
+		}
+		c.JSON(204, nil)
 	}
 }
