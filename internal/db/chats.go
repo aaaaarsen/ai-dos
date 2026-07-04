@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"errors"
 
 	"github.com/aaaaarsen/ai-dos/internal/models"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -43,4 +44,18 @@ func GetChatsByUserID (pool *pgxpool.Pool, userID int64) ([]models.Chat, error) 
 		return nil, err
 	}
 	return chats, nil
+}
+
+func DeleteChat(pool *pgxpool.Pool, chatID int64, userID int64) error {
+	query := `DELETE FROM chats WHERE id = $1 AND user_id = $2`
+
+	tag, err := pool.Exec(context.Background(), query, chatID, userID)
+	if err != nil {
+		return err
+	}
+
+	if tag.RowsAffected() == 0 {
+		return errors.New("chat not found")
+	}
+	return nil
 }

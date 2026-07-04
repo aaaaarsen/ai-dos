@@ -4,6 +4,7 @@ import (
 	"github.com/aaaaarsen/ai-dos/internal/db"
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"strconv"
 )
 
 type CreateChatRequest struct {
@@ -51,5 +52,34 @@ func GetChatsHandler(pool *pgxpool.Pool) gin.HandlerFunc{
 		}
 		c.JSON(200, chats)
 
+	}
+}
+
+func DeleteChatHandler(pool *pgxpool.Pool)gin.HandlerFunc{
+	return func(c *gin.Context) {
+		value1 := c.Param("id")
+		chatID, err := strconv.ParseInt(value1, 10, 64)
+		if err != nil {
+			c.JSON(500, gin.H{"error": err.Error()})
+			return 
+		}
+
+		value2, exists := c.Get("userID")
+		if !exists {
+			c.JSON(401, gin.H{"error": "unauthorized"})
+			return 
+		}
+		userID := value2.(int64)
+
+		err = db.DeleteChat(pool, chatID, userID)
+		if err != nil{
+			if err.Error() == "chat not found" {
+				c.JSON(404, gin.H{"error": err.Error()})
+				return 
+			}
+			c.JSON(500, gin.H{"error": err.Error()})
+			return 
+		}
+		c.JSON(204, nil)
 	}
 }
