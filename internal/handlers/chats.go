@@ -83,3 +83,21 @@ func DeleteChatHandler(pool *pgxpool.Pool)gin.HandlerFunc{
 		c.JSON(204, nil)
 	}
 }
+
+func GetSummariesHandler(pool *pgxpool.Pool) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		value := c.Param("id")
+		chatID, err := strconv.ParseInt(value, 10, 64)
+		if err != nil {
+			c.JSON(400, gin.H{"error": err.Error()})
+			return 
+		}
+
+		summaries, err := db.GetRecentSummaries(pool, chatID, 10)
+		if err != nil {
+			c.JSON(500, gin.H{"error": err.Error()})
+			return 
+		}
+		c.JSON(200, summaries)
+	}
+}
