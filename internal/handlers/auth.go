@@ -9,6 +9,7 @@ import (
 )
 
 type AuthRequest struct {
+	Name *string `json:"name"`
 	Email string `json:"email"`
 	Password string `json:"password"`
 }
@@ -28,7 +29,7 @@ func RegisterHandler(pool *pgxpool.Pool, jwtSecret string) gin.HandlerFunc {
 			return 
 		}
 
-		user, err := db.CreateUser(pool, req.Email, hashedPassword)
+		user, err := db.CreateUser(pool,req.Name, req.Email, hashedPassword)
 		if err != nil {
 			if err.Error() == "email already exists"  {
 				c.JSON(409, gin.H{"error": err.Error()})

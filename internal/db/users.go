@@ -11,12 +11,12 @@ import (
 
 
 
-func CreateUser (pool *pgxpool.Pool, email string, passwordHash string) (*models.User, error) {
-	query := `INSERT INTO users (email, password_hash) VALUES ($1, $2) RETURNING id, created_at`
+func CreateUser (pool *pgxpool.Pool, name *string, email string, passwordHash string) (*models.User, error) {
+	query := `INSERT INTO users (name, email, password_hash) VALUES ($1, $2, $3) RETURNING id, created_at`
 
-	user := &models.User{Email: email, PasswordHash: passwordHash}
+	user := &models.User{Name: name ,Email: email, PasswordHash: passwordHash}
 
-	err := pool.QueryRow(context.Background(), query, email, passwordHash).Scan(&user.ID, &user.CreatedAt)
+	err := pool.QueryRow(context.Background(), query, name, email, passwordHash).Scan(&user.ID, &user.CreatedAt)
 	if err != nil {
 		var pgErr *pgconn.PgError
 		if errors.As(err, &pgErr) && pgErr.Code == "23505"{
