@@ -62,6 +62,9 @@ func main(){
 	router.POST("/auth/register", handlers.RegisterHandler(pool, jwtSecret))
 	router.POST("/auth/login", handlers.LoginHandler(pool, jwtSecret))
 
+	protected.POST("/mood", handlers.SaveMoodHandler(pool))
+	protected.GET("/mood/today", handlers.GetTodayMoodHandler(pool))	
+
 	protected.GET("/chats", handlers.GetChatsHandler(pool))
 	protected.GET("/chats/:id/messages", handlers.GetMessagesHandler(pool))
 	protected.GET("/users/me", handlers.GetMeHandler(pool))
