@@ -86,3 +86,38 @@ func GetRecentMessages(pool *pgxpool.Pool, chatID int64, limit int)([]models.Mes
 	}
 	return messages, nil
 }
+
+func GetWeeklyStats(pool *pgxpool.Pool, userID int64)([]models.DayStat, error){
+	query := `SELECT 
+				DATE(m.created_at) as day,
+				COUNT(*) as message_count
+			FROM messages m
+			JOIN chats c ON m.chat_id = c.id
+			WHERE c.user_id = $1 
+				AND m.role = 'user'
+				AND m.created_at >= NOW() - INTERVAL '7 days'
+			GROUP BY DATE(m.created_at)
+			ORDER BY day ASC`
+	var weeklyStats []models.DayStat
+
+	rows, err := pool.Query(context.Background(), query, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next(){
+		var stat models.DayStat
+		err = rows.Scan(&stat.Day, &stat.MessageCount)
+		if err != nil {
+			return nil, err
+		}
+		weeklyStats = append(weeklyStats, stat)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return weeklyStats, nil
+}
