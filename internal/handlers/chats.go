@@ -1,10 +1,12 @@
 package handlers
 
 import (
+	"strconv"
+
 	"github.com/aaaaarsen/ai-dos/internal/db"
+	"github.com/aaaaarsen/ai-dos/internal/models"
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"strconv"
 )
 
 type CreateChatRequest struct {
@@ -49,6 +51,9 @@ func GetChatsHandler(pool *pgxpool.Pool) gin.HandlerFunc{
 		if err != nil{
 			c.JSON(500, gin.H{"error": err.Error()})
 			return 
+		}
+		if chats == nil {
+			chats = []models.Chat{}
 		}
 		c.JSON(200, chats)
 

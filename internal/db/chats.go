@@ -21,7 +21,15 @@ func CreateChat (pool *pgxpool.Pool, userID int64, title *string) (*models.Chat,
 }
 
 func GetChatsByUserID (pool *pgxpool.Pool, userID int64) ([]models.Chat, error) {
-	query := `SELECT id, user_id, title, created_at FROM chats WHERE user_id = $1 ORDER BY created_at DESC`
+	query := 	`SELECT 
+					id, user_id, title, created_at,
+					(SELECT content FROM messages 
+					WHERE chat_id = chats.id 
+					ORDER BY created_at DESC 
+					LIMIT 1) as last_message
+				FROM chats 
+				WHERE user_id = $1 
+				ORDER BY created_at DESC`
 
 	var chats []models.Chat
 
@@ -33,7 +41,7 @@ func GetChatsByUserID (pool *pgxpool.Pool, userID int64) ([]models.Chat, error) 
 
 	for rows.Next(){
 		var chat models.Chat
-		err = rows.Scan(&chat.ID, &chat.UserID, &chat.Title, &chat.CreatedAt)
+		err = rows.Scan(&chat.ID, &chat.UserID, &chat.Title, &chat.CreatedAt, &chat.LastMessage)
 		if err != nil {
 			return nil, err
 		}
