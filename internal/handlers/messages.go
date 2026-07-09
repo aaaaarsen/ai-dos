@@ -32,6 +32,10 @@ func CreateMessageHandler(pool *pgxpool.Pool, groqKey string, groqModel string) 
 			c.JSON(400, gin.H{"error": err.Error()})
 			return 
 		}
+		if strings.TrimSpace(req.Content) == "" {
+			c.JSON(400, gin.H{"error": "message content cannot be empty"})
+    		return
+		}
 
 		_, err = db.CreateMessage(pool, chatID, "user", req.Content)
 		if err != nil {

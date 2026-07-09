@@ -22,6 +22,14 @@ func RegisterHandler(pool *pgxpool.Pool, jwtSecret string) gin.HandlerFunc {
 			c.JSON(400, gin.H{"error": err.Error()})
 			return 
 		}
+		if req.Email == "" {
+			c.JSON(400, gin.H{"error": "email is required"})
+			return 
+		}
+		if len(req.Password) < 6 {
+			c.JSON(400, gin.H{"error": "password must be at least 6 characters"})
+			return 
+		}
 
 		hashedPassword, err := auth.HashPassword(req.Password)
 		if err != nil {

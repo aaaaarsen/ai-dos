@@ -19,6 +19,10 @@ func SaveMoodHandler(pool *pgxpool.Pool) gin.HandlerFunc{
 			c.JSON(400, gin.H{"error": err.Error()})
 			return 
 		}
+		if req.Emoji == "" {
+			c.JSON(400, gin.H{"error": "emoji is required"})
+			return
+		}
 
 		value, exists := c.Get("userID")
 		if !exists {
