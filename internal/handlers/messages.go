@@ -16,6 +16,15 @@ type CreateMessageRequest struct {
 	Content string `json:"content"`
 }
 
+// @Summary      Отправить сообщение
+// @Tags         messages
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id   path  int  true  "ID чата"
+// @Param        body body CreateMessageRequest true "Текст сообщения"
+// @Success      201  {object}  map[string]interface{}
+// @Router       /chats/{id}/messages [post]
 func CreateMessageHandler(pool *pgxpool.Pool, groqKey string, groqModel string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req CreateMessageRequest
@@ -116,6 +125,13 @@ func CreateMessageHandler(pool *pgxpool.Pool, groqKey string, groqModel string) 
 	}
 }
 
+// @Summary      История сообщений
+// @Tags         messages
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id   path  int  true  "ID чата"
+// @Success      200  {object}  []map[string]interface{}
+// @Router       /chats/{id}/messages [get]
 func GetMessagesHandler(pool *pgxpool.Pool) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		query := c.Param("id")

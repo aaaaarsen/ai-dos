@@ -10,7 +10,12 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-
+// @Summary      Анализ паттернов
+// @Tags         users
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200  {object}  map[string]interface{}
+// @Router       /users/me/insights [get]
 func GetInsightsHandler(pool *pgxpool.Pool, groqKey string, groqModel string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		value, exists := c.Get("userID")
@@ -48,7 +53,12 @@ func GetInsightsHandler(pool *pgxpool.Pool, groqKey string, groqModel string) gi
 		c.JSON(200, gin.H{"insight": generatedInsight})
 	}
 }
-
+// @Summary      Статистика за 7 дней
+// @Tags         users
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200  {object}  map[string]interface{}
+// @Router       /users/me/stats [get]
 func GetStatsHandler(pool *pgxpool.Pool) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		stats := []models.DayStat{}

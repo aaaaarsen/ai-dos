@@ -11,7 +11,19 @@ import (
 	"github.com/aaaaarsen/ai-dos/internal/middleware"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	_ "github.com/aaaaarsen/ai-dos/docs"
 )
+
+// @title           AI Dos API
+// @version         1.0
+// @description     Персональный журнал мыслей с ИИ-наставником
+// @host            localhost:8080
+// @BasePath        /api
+// @securityDefinitions.apikey BearerAuth
+// @in              header
+// @name            Authorization
 
 func main(){
 	_ = godotenv.Load()
@@ -57,6 +69,7 @@ func main(){
 
 	api := router.Group("/api")
 	api.GET("/health", func(c *gin.Context) { c.JSON(200, gin.H{"status": "ok"}) })
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	api.POST("/auth/register", handlers.RegisterHandler(pool, jwtSecret))
 	api.POST("/auth/login", handlers.LoginHandler(pool, jwtSecret))
 

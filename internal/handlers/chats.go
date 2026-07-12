@@ -13,6 +13,14 @@ type CreateChatRequest struct {
 	Title *string `json:"title"`
 } 
 
+// @Summary      Создать чат
+// @Tags         chats
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        body body CreateChatRequest true "Название чата"
+// @Success      201  {object}  map[string]interface{}
+// @Router       /chats [post]
 func CreateChatHandler(pool *pgxpool.Pool) gin.HandlerFunc{
 	return func(c *gin.Context){
 		var req CreateChatRequest
@@ -37,7 +45,12 @@ func CreateChatHandler(pool *pgxpool.Pool) gin.HandlerFunc{
 	}
 }
 
-
+// @Summary      Список чатов
+// @Tags         chats
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200  {object}  []map[string]interface{}
+// @Router       /chats [get]
 func GetChatsHandler(pool *pgxpool.Pool) gin.HandlerFunc{
 	return func(c *gin.Context) {
 		value, exists := c.Get("userID")
@@ -60,6 +73,14 @@ func GetChatsHandler(pool *pgxpool.Pool) gin.HandlerFunc{
 	}
 }
 
+// @Summary      Удалить чат
+// @Tags         chats
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id   path  int  true  "ID чата"
+// @Success      204
+// @Failure      404  {object}  map[string]interface{}
+// @Router       /chats/{id} [delete]
 func DeleteChatHandler(pool *pgxpool.Pool)gin.HandlerFunc{
 	return func(c *gin.Context) {
 		value1 := c.Param("id")
@@ -89,6 +110,13 @@ func DeleteChatHandler(pool *pgxpool.Pool)gin.HandlerFunc{
 	}
 }
 
+// @Summary      Сводки чата
+// @Tags         chats
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id   path  int  true  "ID чата"
+// @Success      200  {object}  []map[string]interface{}
+// @Router       /chats/{id}/summaries [get]
 func GetSummariesHandler(pool *pgxpool.Pool) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		value := c.Param("id")

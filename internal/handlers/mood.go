@@ -10,6 +10,13 @@ type SaveMoodRequest struct{
 	Emoji string `json:"emoji"`
 }
 
+// @Summary      Сохранить настроение
+// @Tags         mood
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Success      201  {object}  map[string]interface{}
+// @Router       /mood [post]
 func SaveMoodHandler(pool *pgxpool.Pool) gin.HandlerFunc{
 	return func(c *gin.Context) {
 		var req SaveMoodRequest
@@ -39,7 +46,12 @@ func SaveMoodHandler(pool *pgxpool.Pool) gin.HandlerFunc{
 		c.JSON(200, mood)
 	}
 }
-
+// @Summary      Настроение сегодня
+// @Tags         mood
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200  {object}  map[string]interface{}
+// @Router       /mood/today [get]
 func GetTodayMoodHandler(pool *pgxpool.Pool) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		value, exists := c.Get("userID")

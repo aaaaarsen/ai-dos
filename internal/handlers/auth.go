@@ -14,6 +14,15 @@ type AuthRequest struct {
 	Password string `json:"password"`
 }
 
+// @Summary      Регистрация
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        body body AuthRequest true "Email и пароль"
+// @Success      201  {object}  map[string]interface{}
+// @Failure      409  {object}  map[string]interface{}
+// @Failure      500  {object}  map[string]interface{}
+// @Router       /auth/register [post]
 func RegisterHandler(pool *pgxpool.Pool, jwtSecret string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req AuthRequest
@@ -57,6 +66,14 @@ func RegisterHandler(pool *pgxpool.Pool, jwtSecret string) gin.HandlerFunc {
 	}
 }
 
+// @Summary      Вход
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        body body AuthRequest true "Email и пароль"
+// @Success      200  {object}  map[string]interface{}
+// @Failure      401  {object}  map[string]interface{}
+// @Router       /auth/login [post]
 func LoginHandler(pool *pgxpool.Pool, jwtSecret string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req AuthRequest
@@ -89,6 +106,13 @@ func LoginHandler(pool *pgxpool.Pool, jwtSecret string) gin.HandlerFunc {
 	}
 }
 
+// @Summary      Профиль пользователя
+// @Tags         users
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200  {object}  map[string]interface{}
+// @Failure      401  {object}  map[string]interface{}
+// @Router       /users/me [get]
 func GetMeHandler(pool *pgxpool.Pool) gin.HandlerFunc{
 	return func (c *gin.Context){
 		value, exists := c.Get("userID")
@@ -107,6 +131,13 @@ func GetMeHandler(pool *pgxpool.Pool) gin.HandlerFunc{
 	}
 }
 
+// @Summary      Удалить аккаунт
+// @Tags         users
+// @Produce      json
+// @Security     BearerAuth
+// @Success      204
+// @Failure      401  {object}  map[string]interface{}
+// @Router       /users/me [delete]
 func DeleteMeHandler(pool *pgxpool.Pool) gin.HandlerFunc{
 	return func(c *gin.Context) {
 		value, exists := c.Get("userID")
